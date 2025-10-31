@@ -1,9 +1,13 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
-import pprint
 import time
 import os
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+)
 
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
@@ -22,16 +26,18 @@ async def check_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     for word in BAD_WORDS:
         if word in text:
+            logging.info(f"user {user} sent bad word {word}")
             await update.message.reply_animation(animation=GIF_ID)
             break
 
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_message))
 
+
 while True:
     try:
-        print("bot started")
+        logging.info("bot started")
         app.run_polling()
     except Exception as error:
-        print(f"error, restarting: {error}")
+        logging.exception("error, restarting")
         time.sleep(1)

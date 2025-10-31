@@ -8,4 +8,4 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
     volumes:
-      - ./bot.py:/app/bot.py
+      - ./main.py:/app/main.py
